@@ -1,0 +1,40 @@
+/* SVG Background Pattern */
+.svg-background-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Fill the page-container */
+    z-index: 2;
+    /* Middle layer */
+    /* In front of white container (1) but behind header */
+    /* Behind content but above body background if needed, actually content is z-1 or z-1? */
+    /* Content in .page-container has z-index: 1. So this should be 0. */
+    background-image: url('../Alf & Belle (6).svg');
+    background-size: 100% auto;
+    /* Width 100%, Height Auto (maintains aspect ratio) */
+    background-repeat: repeat-y;
+    /* Repeat vertically as requested */
+    background-position: top center;
+    opacity: 0.8;
+    /* Keeping some transparency as per previous preference, adjustable */
+    pointer-events: none;
+}
+
+/* Specific Header Adjustment */
+.main-header {
+    font-size: 3.5rem;
+    color: #ff6b9d;
+    text-shadow: 2px 2px 0px #fff, 4px 4px 0px rgba(255, 107, 157, 0.2);
+    margin: 1em 0;
+    position: relative;
+    z-index: 10;
+    /* Ensure header is well above bg */
+}
+
+/* Ensure page content stays on top */
+.page-container {
+    position: relative;
+    z-index: 1;
+}

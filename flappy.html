@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge 1: Flappy Bird</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="page-container" id="flappy" class="view active">
+        <h2>Challenge 1: Flappy Bird</h2>
+        <div class="game-container">
+            <div class="game-info">Score: <span id="flappyScore">0</span>/2</div>
+            <p class="game-instructions">Click, tap, or press spacebar to fly! Avoid the pipes!</p>
+            <canvas id="gameCanvas" width="600" height="500"></canvas>
+            <button id="flappyNext" onclick="window.location.href='roadmap.html'" style="display: none;">Back to
+                Roadmap</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initFlappyGame();
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

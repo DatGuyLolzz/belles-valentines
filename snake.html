@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge 3: Love Snake</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="page-container" id="snake">
+        <h2>Challenge 3: The Love Snake</h2>
+        <div class="game-container">
+            <div class="game-info">Score: <span id="snakeScore">0</span>/10</div>
+            <p class="game-instructions">Arrow keys or swipe to move! Eat roses to grow! 🌹</p>
+            <canvas id="snakeCanvas" width="600" height="420"></canvas>
+            <button id="snakeNext" onclick="window.location.href='roadmap.html'" style="display: none;">Back to
+                Roadmap</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initSnakeGame();
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

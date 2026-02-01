@@ -1,0 +1,667 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(135deg, #ffeef8 0%, #ffd6e8 50%, #ffe0f5 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.pastel-circle {
+    position: fixed;
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    position: relative;
+    /* z-index removed to handle global stacking with background */
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #ff6b9d;
+    text-align: center;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(255, 107, 157, 0.3);
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: #ff6b9d;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+button {
+    background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+    color: white;
+    border: none;
+    padding: 22.5px 45px;
+    font-size: 1.8rem;
+    border-radius: 35px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    z-index: 10;
+    /* Topmost */
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.6);
+}
+
+button:disabled {
+    background: linear-gradient(135deg, #ccc 0%, #999 100%);
+    cursor: not-allowed;
+    transform: none;
+}
+
+button:disabled:hover {
+    box-shadow: none;
+}
+
+.heart {
+    position: fixed;
+    font-size: 20px;
+    animation: float 15s infinite;
+    opacity: 0.6;
+    z-index: 0;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.6;
+    }
+
+    90% {
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Memory Game Styles */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    max-width: 500px;
+    margin: 20px auto;
+    z-index: 10;
+    position: relative;
+    min-height: 200px;
+}
+
+.card {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #fff0f5 0%, #ffb6c1 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(255, 107, 157, 0.2);
+    z-index: 10;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+.card span {
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card:hover {
+    transform: scale(1.08) translateY(-5px);
+    box-shadow: 0 8px 20px rgba(255, 107, 157, 0.4);
+}
+
+.card.flipped {
+    background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
+    color: white;
+    transform: scale(1.1) rotateY(360deg);
+    box-shadow: 0 8px 25px rgba(255, 107, 157, 0.5);
+}
+
+.card.flipped span {
+    transform: scale(1.2);
+}
+
+.card.matched {
+    background: linear-gradient(135deg, #90EE90 0%, #98FB98 100%);
+    animation: matchPulse 0.6s ease-out, matchGlow 1s ease-out infinite alternate;
+}
+
+@keyframes matchPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes matchGlow {
+    0% {
+        box-shadow: 0 0 10px rgba(144, 238, 144, 0.5);
+    }
+
+    100% {
+        box-shadow: 0 0 30px rgba(144, 238, 144, 0.8);
+    }
+}
+
+/* Game Container Styles */
+.game-info {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ff6b9d;
+    font-size: 1.1rem;
+}
+
+#gameCanvas,
+#snakeCanvas {
+    border: 3px solid #ff6b9d;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #FFF0F5 0%, #FFE4EC 30%, #E6E6FA 70%, #B0E0E6 100%);
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+#snakeCanvas {
+    background: #FFF0F5;
+    max-width: 100%;
+    height: auto;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.game-instructions {
+    color: #ff6b9d;
+    margin: 10px 0;
+    text-align: center;
+}
+
+/* Itinerary Styles */
+.itinerary-container {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.2);
+    max-width: 960px;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+    /* Behind SVG (2) */
+}
+
+.timeline {
+    position: relative;
+    padding: 20px 0;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(180deg, #ff6b9d 0%, #ff8fab 100%);
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    width: 45%;
+    /* Sligthly reduced width to fit card */
+    padding: 30px;
+    /* Added padding for card content */
+    opacity: 0;
+    transform: perspective(1000px) rotateX(10deg) translateY(50px) scale(0.9);
+    transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    background: white;
+    /* Fallback */
+    /* Centering Content */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Alternating Pastel Colors */
+/* Alternating Pastel Colors */
+.timeline-item:nth-child(3n+1) {
+    background: linear-gradient(135deg, #ffeef8 0%, #fff0f5 100%);
+    /* Pink-ish */
+}
+
+.timeline-item:nth-child(3n+2) {
+    background: linear-gradient(135deg, #e6e6fa 0%, #f3e6ff 100%);
+    /* Purple-ish */
+}
+
+.timeline-item:nth-child(3n+3) {
+    background: linear-gradient(135deg, #e0f7fa 0%, #e1f5fe 100%);
+    /* Blue-ish */
+}
+
+.timeline-item.visible {
+    opacity: 1;
+    transform: perspective(1000px) rotateX(0) translateY(0) scale(1);
+}
+
+.timeline-item:nth-child(odd) {
+    left: 0;
+    text-align: center;
+    /* Override previous specificity */
+}
+
+.timeline-item:nth-child(even) {
+    left: 55%;
+    text-align: center;
+    /* Override previous specificity */
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    /* Connect to center of box height */
+    width: 12%;
+    /* Span the gap (approx 5% + overlaps) */
+    height: 4px;
+    background: #ff6b9d;
+    z-index: 2;
+}
+
+.timeline-item:nth-child(odd)::before {
+    right: -12%;
+    /* Extend outwards to right */
+}
+
+.timeline-item:nth-child(even)::before {
+    left: -12%;
+    /* Extend outwards to left */
+}
+
+.timeline-emoji {
+    font-size: 4.5rem;
+    margin-bottom: 15px;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.timeline-emoji:hover {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.timeline-content {
+    color: #666;
+    font-size: 1.3rem;
+    line-height: 1.6;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 1.5rem;
+    color: #ff6b9d;
+}
+
+/* Confetti Styles */
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #ff6b9d;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Roadmap Styles */
+.roadmap-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(255, 107, 157, 0.2);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background: #f0f0f0;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #90EE90 0%, #ff6b9d 100%);
+    transition: width 0.5s ease-out;
+    border-radius: 10px;
+}
+
+.progress-text {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+    color: #ff6b9d;
+    font-weight: bold;
+}
+
+.roadmap {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    position: relative;
+    padding: 60px 40px 40px;
+    flex-wrap: wrap;
+}
+
+.roadmap-line {
+    position: absolute;
+    left: 80px;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    background: #ddd;
+    z-index: 1;
+}
+
+.roadmap-line-fill {
+    position: absolute;
+    left: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #90EE90 0%, #ff6b9d 100%);
+    z-index: 1;
+    transition: width 0.5s ease-out;
+}
+
+.roadmap-node {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.roadmap-node.locked {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.roadmap-node.unlocked {
+    opacity: 1;
+    animation: nodeGlow 2s ease-in-out infinite alternate;
+}
+
+.roadmap-node.completed {
+    opacity: 1;
+}
+
+@keyframes nodeGlow {
+    0% {
+        filter: drop-shadow(0 0 5px rgba(255, 107, 157, 0.5));
+    }
+
+    100% {
+        filter: drop-shadow(0 0 15px rgba(255, 107, 157, 0.8));
+    }
+}
+
+.node-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: white;
+    border: 4px solid #ff6b9d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.3);
+}
+
+.roadmap-node.locked .node-icon {
+    border-color: #ccc;
+    box-shadow: none;
+}
+
+.roadmap-node.completed .node-icon {
+    border-color: #90EE90;
+    background: linear-gradient(135deg, #90EE90 0%, #98FB98 100%);
+}
+
+.roadmap-node.unlocked:hover .node-icon {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.5);
+}
+
+.node-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #ff6b9d;
+    text-align: center;
+}
+
+.node-status {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.roadmap-node.locked .node-title,
+.roadmap-node.locked .node-status {
+    color: #ccc;
+}
+
+.roadmap-node.completed .node-status {
+    color: #90EE90;
+}
+
+.node-checkmark {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 1.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.roadmap-node.completed .node-checkmark {
+    opacity: 1;
+    animation: checkmarkPop 0.5s ease-out;
+}
+
+@keyframes checkmarkPop {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.3);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .timeline {
+        padding-left: 30px;
+    }
+
+    .timeline::before {
+        left: 10px;
+        transform: none;
+    }
+
+    .timeline-item {
+        width: 100%;
+        left: auto !important;
+        padding-left: 50px;
+        padding-right: 0;
+        text-align: left !important;
+    }
+
+    .timeline-item::before {
+        left: 10px !important;
+        right: auto !important;
+        width: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    .memory-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        max-width: 350px;
+    }
+
+    .card {
+        width: 85px;
+        height: 85px;
+        font-size: 2rem;
+    }
+
+    #gameCanvas,
+    #snakeCanvas {
+        width: 100%;
+        height: 300px;
+    }
+
+    .roadmap-container {
+        padding: 20px;
+    }
+
+    /* Vertical roadmap on mobile */
+    .roadmap {
+        flex-direction: column;
+        padding: 20px 0;
+    }
+
+    .roadmap-line {
+        left: 50%;
+        right: auto;
+        top: 0;
+        bottom: 0;
+        height: auto;
+        width: 4px;
+        transform: translateX(-50%);
+    }
+
+    .roadmap-line-fill {
+        left: 50%;
+        height: auto;
+        width: 4px;
+        transform: translateX(-50%);
+        transition: height 0.5s ease-out;
+    }
+
+    .node-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+
+    .node-title {
+        font-size: 0.9rem;
+    }
+
+    .timeline-emoji {
+        font-size: 2rem;
+    }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    .roadmap {
+        padding: 60px 20px 40px;
+    }
+
+    .roadmap-line {
+        left: 50px;
+        right: 50px;
+    }
+
+    .roadmap-line-fill {
+        left: 50px;
+    }
+
+    .node-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 2.2rem;
+    }
+}

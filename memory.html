@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Challenge 2: Memory Game</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="page-container">
+        <h2>Challenge 2: Memory Game</h2>
+        <div class="game-container">
+            <div class="game-info">Pairs Found: <span id="pairsFound">0</span>/6</div>
+            <p class="game-instructions">Click on cards to flip them. Match all 6 pairs to win!</p>
+            <div class="memory-grid" id="memoryGrid"></div>
+            <button id="memoryNext" onclick="window.location.href='roadmap.html'" style="display: none;">Back to Roadmap</button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initMemoryGame();
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+</html>

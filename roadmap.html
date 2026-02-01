@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Journey - Valentine's Roadmap</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .roadmap-container {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <h1>Your Journey 💕</h1>
+        <p style="text-align: center; color: #ff6b9d; margin-bottom: 20px;">
+            Complete each challenge to unlock the next!
+        </p>
+
+        <div class="roadmap-container">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">0 / 3 Challenges Complete</div>
+
+            <div class="roadmap" id="roadmap">
+                <div class="roadmap-line"></div>
+                <div class="roadmap-line-fill" id="roadmapLineFill"></div>
+
+                <div class="roadmap-node" id="node-flappy" onclick="navigateToGame('flappy')">
+                    <div class="node-icon">🐤</div>
+                    <div class="node-title">Flappy Bird</div>
+                    <div class="node-status" id="status-flappy">Unlocked</div>
+                    <div class="node-checkmark">✅</div>
+                </div>
+
+                <div class="roadmap-node" id="node-memory" onclick="navigateToGame('memory')">
+                    <div class="node-icon">🎴</div>
+                    <div class="node-title">Memory Game</div>
+                    <div class="node-status" id="status-memory">Locked</div>
+                    <div class="node-checkmark">✅</div>
+                </div>
+
+                <div class="roadmap-node" id="node-snake" onclick="navigateToGame('snake')">
+                    <div class="node-icon">🐍</div>
+                    <div class="node-title">Love Snake</div>
+                    <div class="node-status" id="status-snake">Locked</div>
+                    <div class="node-checkmark">✅</div>
+                </div>
+
+                <div class="roadmap-node" id="node-envelope" onclick="navigateToGame('envelope')">
+                    <div class="node-icon">✉️</div>
+                    <div class="node-title">The Surprise</div>
+                    <div class="node-status" id="status-envelope">Locked</div>
+                    <div class="node-checkmark">✅</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateRoadmap() {
+            const progress = getProgress();
+            const completedCount = (progress.flappy ? 1 : 0) + (progress.memory ? 1 : 0) + (progress.snake ? 1 : 0);
+
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const percentages = [0, 33, 66, 100];
+            const linePercentages = [0, 33, 66, 75];
+            const percentage = percentages[completedCount];
+            const linePercentage = linePercentages[completedCount];
+
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = `${completedCount} / 3 Challenges Complete`;
+
+            const roadmapLineFill = document.getElementById('roadmapLineFill');
+            roadmapLineFill.style.width = linePercentage + '%';
+
+            const nodes = {
+                flappy: { unlocked: true, completed: progress.flappy },
+                memory: { unlocked: progress.flappy, completed: progress.memory },
+                snake: { unlocked: progress.flappy && progress.memory, completed: progress.snake },
+                envelope: { unlocked: progress.allComplete, completed: false }
+            };
+
+            for (const [gameId, status] of Object.entries(nodes)) {
+                const node = document.getElementById(`node-${gameId}`);
+                const nodeStatus = document.getElementById(`status-${gameId}`);
+
+                node.classList.remove('locked', 'unlocked', 'completed');
+
+                if (status.completed) {
+                    node.classList.add('completed');
+                    nodeStatus.textContent = 'Complete!';
+                } else if (status.unlocked) {
+                    node.classList.add('unlocked');
+                    nodeStatus.textContent = 'Unlocked';
+                } else {
+                    node.classList.add('locked');
+                    nodeStatus.textContent = 'Locked';
+                }
+            }
+        }
+
+        function navigateToGame(gameId) {
+            const progress = getProgress();
+
+            switch (gameId) {
+                case 'flappy':
+                    window.location.href = 'flappy.html';
+                    break;
+                case 'memory':
+                    if (progress.flappy) {
+                        window.location.href = 'memory.html';
+                    }
+                    break;
+                case 'snake':
+                    if (progress.flappy && progress.memory) {
+                        window.location.href = 'snake.html';
+                    }
+                    break;
+                case 'envelope':
+                    if (progress.allComplete) {
+                        window.location.href = 'valentine.html';
+                    }
+                    break;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            updateRoadmap();
+
+            window.addEventListener('storage', function (e) {
+                if (e.key === PROGRESS_KEY) {
+                    updateRoadmap();
+                }
+            });
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
